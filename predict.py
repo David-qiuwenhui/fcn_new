@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 from PIL import Image
 
-from deeplabv3_segmentation import DeepLabV3_Segmentation
+from fcn_segmentation import FCN_Segmentation
 from utils.utils import time_synchronized
 
 # ----------------------------------------------------#
@@ -17,19 +17,19 @@ def parse_args():
     # predict, dir_predict, fps, video
     parser.add_argument(
         "--mode",
-        default="predict",
+        default="dir_predict",
         type=str,
         help="predict, dir_predict, fps, video",
     ),
     parser.add_argument(
         "--mix-type",
-        default=2,
+        default=1,
         type=int,
         help="0混合, 1仅原图, 2仅原图中的目标_扣去背景",
     ),
     parser.add_argument(
         "--model-path",
-        default="./logs/01b_deeplabv3new_resnet50_bs16/best_epoch_weights.pth",
+        default="./logs/best_epoch_weights.pth",
         type=str,
     ),
     parser.add_argument(
@@ -90,7 +90,7 @@ def main(args):
     # -------------------------------------------------------------------------#
     #   如果想要修改对应种类的颜色，到generate函数里修改self.colors即可
     # -------------------------------------------------------------------------#
-    deeplabv3 = DeepLabV3_Segmentation(
+    fcn = FCN_Segmentation(
         args.model_path,
         args.num_classes,
         args.backbone,
@@ -139,7 +139,7 @@ def main(args):
         count = args.count
         img = args.img_path
         image = Image.open(img)
-        r_image = deeplabv3.detect_image(image, count=count, name_classes=name_classes)
+        r_image = fcn.detect_image(image, count=count, name_classes=name_classes)
         r_image.save(args.img_save_path)
         # r_image.show()
 
@@ -174,7 +174,7 @@ def main(args):
             ):
                 image_path = os.path.join(dir_origin_path, img_name)
                 image = Image.open(image_path)
-                r_image = deeplabv3.detect_image(image)
+                r_image = fcn.detect_image(image)
                 if not os.path.exists(dir_save_path):
                     os.makedirs(dir_save_path)
                 r_image.save(os.path.join(dir_save_path, img_name))
@@ -189,7 +189,7 @@ def main(args):
         test_interval = args.test_interval
         fps_image_path = args.fps_image
         img = Image.open(fps_image_path)
-        tact_time = deeplabv3.get_FPS(img, test_interval)
+        tact_time = fcn.get_FPS(img, test_interval)
         print(f"{tact_time:0.4f} seconds, {(1 / tact_time):0.2f} FPS, @batch_size=1")
 
     elif mode == "video":
@@ -231,7 +231,7 @@ def main(args):
             # 转变成Image
             frame = Image.fromarray(np.uint8(frame))
             # 进行检测
-            frame = np.array(deeplabv3.detect_image(frame))
+            frame = np.array(fcn.detect_image(frame))
             # RGBtoBGR满足opencv显示格式
             frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
 

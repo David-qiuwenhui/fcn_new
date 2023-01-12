@@ -3,7 +3,7 @@ import os
 from PIL import Image
 from tqdm import tqdm
 
-from deeplabv3_segmentation import DeepLabV3_Segmentation
+from fcn_segmentation import FCN_Segmentation
 from utils.utils_metrics import compute_mIoU, show_results
 
 
@@ -39,7 +39,7 @@ def parse_args():
     # ---------- 卷积模型的参数 ----------
     parser.add_argument(
         "--model-path",
-        default="./logs/01b_deeplabv3new_resnet50_bs16/best_epoch_weights.pth",
+        default="./logs/best_epoch_weights.pth",
         type=str,
     ),
     parser.add_argument(
@@ -136,7 +136,7 @@ def main(args):
             os.makedirs(pred_dir)
 
         print("💾💾💾 Load model")
-        deeplabv3_net = DeepLabV3_Segmentation(
+        fcn_net = FCN_Segmentation(
             args.model_path,
             args.num_classes,
             args.backbone,
@@ -153,7 +153,7 @@ def main(args):
                 SUIMdevkit_path, "SUIM2022/JPEGImages/" + image_id + ".jpg"
             )
             image = Image.open(image_path)
-            image = deeplabv3_net.get_miou_png(image)
+            image = fcn_net.get_miou_png(image)
             image.save(os.path.join(pred_dir, image_id + ".png"))
         print("---------- Get predict result done ----------")
 

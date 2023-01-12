@@ -5,16 +5,16 @@ import torch
 from thop import clever_format, profile
 from torchsummary import summary
 
-from nets.deeplabv3 import deeplabv3_resnet50
+from nets.fcn_model import fcn_resnet50
 
 if __name__ == "__main__":
     input_shape = [512, 512]
     num_classes = 7
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    
-    model = deeplabv3_resnet50(aux=True, 
-                               num_classes=num_classes, 
-                               pretrain_backbone=False).to(device)
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+    model = fcn_resnet50(
+        aux=True, num_classes=num_classes, pretrained_backbone=False
+    ).to(device)
     # ---------- 打印卷积网络模型的每层参数数量 ----------
     summary(model, (3, input_shape[0], input_shape[1]))
 
@@ -28,5 +28,5 @@ if __name__ == "__main__":
     # --------------------------------------------------------#
     flops = flops * 2
     flops, params = clever_format([flops, params], "%.3f")
-    print('Total GFLOPS: %s' % (flops))
-    print('Total params: %s' % (params))
+    print("Total GFLOPS: %s" % (flops))
+    print("Total params: %s" % (params))

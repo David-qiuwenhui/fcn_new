@@ -14,7 +14,7 @@ import torch.nn.functional as F
 from PIL import Image
 from torch import nn
 
-from nets.deeplabv3 import deeplabv3_resnet50
+from nets.fcn_model import fcn_resnet50
 from utils.utils import cvtColor, preprocess_input, resize_image, show_config
 from utils.utils import time_synchronized
 
@@ -27,7 +27,7 @@ from utils.utils import time_synchronized
 # -------------------------------------------------#
 
 
-class DeepLabV3_Segmentation(object):
+class FCN_Segmentation(object):
     def __init__(
         self,
         model_path,
@@ -106,9 +106,7 @@ class DeepLabV3_Segmentation(object):
         # -------------------------------#
         #   载入模型与权值
         # -------------------------------#
-        self.net = deeplabv3_resnet50(
-            aux=self.aux, num_classes=self.num_classes, pretrain_backbone=False
-        )
+        self.net = fcn_resnet50(aux=self.aux, num_classes=self.num_classes)
 
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.net.load_state_dict(torch.load(self.model_path, map_location=device))
