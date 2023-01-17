@@ -31,7 +31,7 @@ def parse_args():
     ),
     parser.add_argument(
         "--mix-type",
-        default=0,
+        default=1,
         type=int,
         help="0混合, 1仅原图, 2仅原图中的目标_扣去背景 get_miou不起作用",
     ),
@@ -39,7 +39,7 @@ def parse_args():
     # ---------- 卷积模型的参数 ----------
     parser.add_argument(
         "--model-path",
-        default="./logs/best_epoch_weights.pth",
+        default="./logs/01_fcn_new_500epochs_bs16_lr1e-2_aux/best_epoch_weights.pth",
         type=str,
     ),
     parser.add_argument(
@@ -76,12 +76,12 @@ def parse_args():
     ),
     parser.add_argument(
         "--file-name",
-        default="val.txt",
+        default="train.txt",
         type=str,
     ),
     parser.add_argument(
         "--save-file-dir",
-        default="./miou_out_val",
+        default="./miou_out_train",
         type=str,
     )
 

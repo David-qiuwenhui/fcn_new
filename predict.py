@@ -17,7 +17,7 @@ def parse_args():
     # predict, dir_predict, fps, video
     parser.add_argument(
         "--mode",
-        default="dir_predict",
+        default="fps",
         type=str,
         help="predict, dir_predict, fps, video",
     ),
@@ -29,7 +29,7 @@ def parse_args():
     ),
     parser.add_argument(
         "--model-path",
-        default="./logs/best_epoch_weights.pth",
+        default="./logs/01_fcn_new_500epochs_bs16_lr1e-2_aux/best_epoch_weights.pth",
         type=str,
     ),
     parser.add_argument(

@@ -120,32 +120,6 @@ def parse_args():
     return args
 
 
-def create_model(aux, num_classes, pretrain=False):
-    model = fcn_resnet50(aux, num_classes, pretrain_backbone=pretrain)
-
-    if pretrain:
-        # fcn resnet50
-        weights_dict = torch.load(
-            "./pre_weights/fcn_resnet50_coco.pth", map_location="cpu"
-        )
-
-        if num_classes != 21:
-            # 官方提供的预训练权重是21类(包括背景，20classes+1background)
-            # 如果训练自己的数据集，将和类别相关的权重删除，防止权重shape不一致报错
-            for k in list(weights_dict.keys()):
-                if "classifier.4" in k:
-                    del weights_dict[k]
-
-        missing_keys, unexpected_keys = model.load_state_dict(
-            state_dict=weights_dict, strict=False
-        )
-        if len(missing_keys) != 0 or len(unexpected_keys) != 0:
-            print("missing_keys: ", missing_keys)
-            print("unexpected_keys: ", unexpected_keys)
-
-    return model
-
-
 def main(args):
     Cuda = args.cuda
     distributed = False
